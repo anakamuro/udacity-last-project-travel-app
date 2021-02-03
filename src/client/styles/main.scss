@@ -1,0 +1,19 @@
+@import './colors.scss';
+
+main {
+    flex: 2;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%;
+    height: 100%;
+    background-color: $background-dark;
+    color: $secondary-text;
+
+    
+
+    @media screen and (max-width: 720px) {
+        display: flex;
+        flex-direction: column;
+    }
+}
