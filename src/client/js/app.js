@@ -124,6 +124,24 @@ async function getPhoto(DcityPhoto) {
   }
 }
 
+await postData('http://localhost:8083/tripData', {
+    cityImage,
+    Dcity,
+    Ddate,
+    Scity,
+    temperature,
+    weather_condition,
+    countdown
+    })
+  
+    await getData('http://localhost:8083/getGeoData')
+    await getData('http://localhost:8083/getWeatherData')
+    await getData('http://localhost:8083/getPhoto')
+    const allData = await getData('http://localhost:8083/all');
+    console.log(allData);
+    updateUI(allData)
+
+
 async function postData(tripData) {
   const response = await fetch("/postData", {
     method: "POST",
@@ -142,7 +160,7 @@ async function postData(tripData) {
 }
 
 const updateUI = async () => {
-  const request = await fetch("/all");
+    const request = await fetch("http://localhost:8083/all");
   try {
     const allData = await request.json();
     const {
@@ -172,7 +190,7 @@ const updateUI = async () => {
         mostly
         <span class="dynamic_content" id="weather">${weather_condition}</span>.</div>
       <div>
-        <button class="button_style" id="remove_trip" >Remove</button>
+      <button class="button_style" id="remove_trip" onclick="Client.handleRemove()">Remove</button>
       </div>
     </div>
   </div>
