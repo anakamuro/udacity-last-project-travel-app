@@ -7,8 +7,12 @@ import "./styles/form.scss";
 import "./styles/header.scss";
 import "./styles/colors.scss";
 
-document.getElementById("btn-add").addEventListener("click", handleSubmit);
-document.getElementById("remove_trip").addEventListener("click", handleRemove);
+if(document.getElementById("btn-add") != null){
+    document.getElementById("btn-add").addEventListener("click", handleSubmit);
+}
+if(document.getElementById("remove_trip") != null){
+    document.getElementById("remove_trip").addEventListener("click", handleRemove);
+}
 
 
 export { checkerUrl, handleSubmit, handleRemove };
