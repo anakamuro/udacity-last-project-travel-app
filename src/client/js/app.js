@@ -145,7 +145,7 @@ await postData('http://localhost:8083/tripData', {
 
 
 async function postData(tripData) {
-  const response = await fetch("/postData", {
+  const response = await fetch("/postData('http://localhost:8083/tripData')", {
     method: "POST",
     credentials: "same-origin",
     headers: {

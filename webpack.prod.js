@@ -12,6 +12,9 @@ module.exports = {
         library: 'Client'
     },
     module: {
+        "presets": [
+            "@babel/preset-env"
+          ],
         rules: [
             {
                 test: '/\.js$/',
@@ -21,10 +24,13 @@ module.exports = {
             {
                 test: /\.scss$/,
                 use: [ 'style-loader', 'css-loader', 'sass-loader']
-            }
+            }, 
         ]
     },
     plugins: [
+        "@babel/transform-runtime",
+          "@babel/plugin-syntax-top-level-await",
+        
         new HtmlWebPackPlugin({
             template: "./src/client/views/index.html",
             filename: "./index.html",
