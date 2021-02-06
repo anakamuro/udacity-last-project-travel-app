@@ -1,9 +1,9 @@
 let tripData = {};
 
 const geoNamesURL = "http://api.geonames.org/searchJSON?q=";
-const username = "ashishtestapi";
+const username = "akiakiaki";
 const darkSkyURL = "https://api.darksky.net/forecast/";
-const darkSkyKey = "a599eb4bfcda9ef2f5173080541a04a4";
+const darkSkyKey = "8e4bdd3f43bdcb3bfede76e626ebb13f";
 const pixabayURL = "https://pixabay.com/api/?key=";
 const pixabayAPI = "15817374-015ecdcbd68299917ebff2ba6";
 
