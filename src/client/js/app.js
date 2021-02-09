@@ -13,6 +13,7 @@ if(document.querySelector("#btn-add") != null){
 
 async function handleSubmit(e) {
   e.preventDefault();
+
   // get user input values
   tripData["Scity"] = document.getElementById("start-city").value;
   tripData["Dcity"] = document.getElementById("destination-city").value;
@@ -126,26 +127,10 @@ async function getPhoto(DcityPhoto) {
   }
 }
 
-await postData('http://localhost:8083/tripData', {
-    cityImage,
-    Dcity,
-    Ddate,
-    Scity,
-    temperature,
-    weather_condition,
-    countdown
-    })
-  
-    await getData('http://localhost:8083/getGeoData')
-    await getData('http://localhost:8083/getWeatherData')
-    await getData('http://localhost:8083/getPhoto')
-    const allData = await getData('http://localhost:8083/all');
-    console.log(allData);
-    updateUI(allData)
 
 
 async function postData(tripData) {
-  const response = await fetch("/postData('http://localhost:8083/tripData')", {
+  const response = await fetch('/postData', {
     method: "POST",
     credentials: "same-origin",
     headers: {
@@ -162,7 +147,7 @@ async function postData(tripData) {
 }
 
 const updateUI = async () => {
-    const request = await fetch("http://localhost:8083/all");
+    const request = await fetch("/all");
   try {
     const allData = await request.json();
     const {

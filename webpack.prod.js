@@ -12,9 +12,9 @@ module.exports = {
         library: 'Client'
     },
     module: {
-        "presets": [
-            "@babel/preset-env"
-          ],
+      //  "presets": [
+       //     "@babel/preset-env"
+       //   ],
         rules: [
             {
                 test: '/\.js$/',
@@ -28,22 +28,17 @@ module.exports = {
         ]
     },
     plugins: [
-        "@babel/transform-runtime",
-          "@babel/plugin-syntax-top-level-await",
+       // "@babel/transform-runtime",
+        //  "@babel/plugin-syntax-top-level-await",
         
         new HtmlWebPackPlugin({
             template: "./src/client/views/index.html",
             filename: "./index.html",
         }),
         new CleanWebpackPlugin({
-            //Simulate the removal of files
-            dry: true,
-            //Write logs to console
-            verbose: true,
-            //Automatically remove all unused webpack assets on rebuild
-            cleanStaleWebpackassets: true, 
-            protectWebpackAssets: false
-        }),
+            cleanOnceBeforeBuildPatterns: ['./js/build/*','./css/build/*']
+          }),
+          ﻿
         new WorkboxPlugin.GenerateSW({
             clientsClaim: true,
             skipWaiting: true
