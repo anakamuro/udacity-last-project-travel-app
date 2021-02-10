@@ -50,6 +50,14 @@ async function handleSubmit(e) {
   tripData["countdown"] = countdown;
 
   try {
+    await postData('http://localhost:8085/tripData', 
+    { cityImage, Dcity, Ddate, Scity, Adate, temperature, weather_condition, countdown })
+     await getData('http://localhost:8085/getGeoData')
+      await getData('http://localhost:8085/getWeatherData') 
+      await getData('http://localhost:8085/getPhoto') 
+      const allData = await getData('http://localhost:8085/all'); 
+      console.log(allData); 
+      updateUI(allData)
 
     // Fetching geo stats of destination place.
     await getGeoData(tripData["Dcity"])
@@ -141,7 +149,7 @@ async function getPhoto(DcityPhoto) {
 }
 
 async function postData(tripData) {
-  const response = await fetch('/postData', {
+  const response = await fetch('http://localhost:8085/postData', {
     method: "POST",
     credentials: "same-origin",
     headers: {
@@ -160,13 +168,14 @@ async function postData(tripData) {
 
 
 const updateUI = async () => {
-    const request = await fetch("/all");
+    const request = await fetch("http://localhost:8085/all");
   try {
     const allData = await request.json();
     const {
       cityImage,
       Dcity,
       Ddate,
+      Adate, 
       Scity,
       temperature,
       weather_condition,
