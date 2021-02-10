@@ -40,7 +40,8 @@ app.post("/postData", function (req, res) {
   tripData.Scity = requestBody.Scity;
   tripData.Dcity = requestBody.Dcity;
   tripData.Ddate = requestBody.Ddate;
-  tripData.countDown = requestBody.countDown;
+  tripData.Adate = requestBody.Adate;
+  tripData.countdown = requestBody.countdown;
   tripData.cityImage = requestBody.cityImage;
   tripData.weather_condition = requestBody.weather_condition;
   tripData.temperature = requestBody.temperature;

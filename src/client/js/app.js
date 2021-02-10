@@ -15,16 +15,28 @@ async function handleSubmit(e) {
   e.preventDefault();
 
   // get user input values
-  tripData["Scity"] = document.getElementById("start-city").value;
+  tripData["Scity"] = document.getElementById("trip-from").value;
   tripData["Dcity"] = document.getElementById("destination-city").value;
-  tripData["Ddate"] = document.getElementById("Ddate").value;
-  tripData["Adate"] = document.getElementById("Adate").value;
+  tripData["Ddate"] = document.getElementById("departing_date").value;
+  tripData["Adate"] = document.getElementById("arriving_date").value;
+  tripData["cityImage"] = document.getElementById("photo-of-destination").value;
+  tripData["countdown"] = document.getElementById("count-down").value;
+  tripData["temperature"] = document.getElementById("temperature").value;
+  tripData["weather_condition"] = document.getElementById("weather").value;
+  
   console.log("Button has been clicked");
   if (
     tripData["Scity"] == "" ||
     tripData["Dcity"] == "" ||
     tripData["Ddate"] == "" ||
-    tripData["Adate"] == ""
+    tripData["Adate"] == "" ||
+    tripData["cityImage"] == "" ||
+    tripData["countdown"] == "" ||
+    tripData["temperature"] == "" ||
+    tripData["weather_condition"] == ""
+    
+
+
   ) {
     alert("You need to write the city and date.");
     return;
@@ -38,6 +50,7 @@ async function handleSubmit(e) {
   tripData["countdown"] = countdown;
 
   try {
+
     // Fetching geo stats of destination place.
     await getGeoData(tripData["Dcity"])
       .then((GeoData) => {
@@ -127,8 +140,6 @@ async function getPhoto(DcityPhoto) {
   }
 }
 
-
-
 async function postData(tripData) {
   const response = await fetch('/postData', {
     method: "POST",
@@ -145,6 +156,8 @@ async function postData(tripData) {
     console.log("error", e);
   }
 }
+
+
 
 const updateUI = async () => {
     const request = await fetch("/all");
@@ -167,10 +180,10 @@ const updateUI = async () => {
     </div>
     <div id="main_details">
       <div id="trip-from">Your trip starts from: <span class="dynamic_content" id="trip-from">${Scity}</span></div>
-      <div id="destination-info">Your trip destination: <span class="dynamic_content" id="destination">${Dcity}</span></div>
+      <div id="destination-city">Your trip destination: <span class="dynamic_content" id="destination-city">${Dcity}</span></div>
       <div id="departure-date">Day your trip starts at: <span class="dynamic_content" id="departing_date">${Ddate}</span>
       </div>
-      <div id="arriving-date">Day you arrive at: <span class="dynamic_content" id="arriving_date">${Scity}</span></div>
+      <div id="arriving-date">Day you arrive at: <span class="dynamic_content" id="arriving_date">${Adate}</span></div>
       <div id="count-down">Days to go <span class="dynamic_content" id="number_of_days">${countdown}</span>
       </div>
       <div id="weather-info">Expect weather to be <span class="dynamic_content" id="temperature"> ${temperature}&#8451;</span> ,
