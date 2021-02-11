@@ -29,11 +29,11 @@ async function handleSubmit(e) {
     tripData["Scity"] == "" ||
     tripData["Dcity"] == "" ||
     tripData["Ddate"] == "" ||
-    tripData["Adate"] == "" ||
-    tripData["cityImage"] == "" ||
-    tripData["countdown"] == "" ||
-    tripData["temperature"] == "" ||
-    tripData["weather_condition"] == ""
+    tripData["Adate"] == "" 
+    //tripData["cityImage"] == "" ||
+    //tripData["countdown"] == "" ||
+    //tripData["temperature"] == "" ||
+    //tripData["weather_condition"] == ""
     
 
 
@@ -109,10 +109,13 @@ export const getData = async (url) => {
 
 async function getGeoData(Dcity) {
   const response = await fetch(
-    `http://api.geonames.org/searchJSON?q=${Dcity}&maxRows=10&username=${username}`
+    'https://cors-anywhere.herokuapp.com/' + `http://api.geonames.org/searchJSON?q=${Dcity}&maxRows=10&username=${username}`
   );
   try {
     const GeoData = await response.json();
+    if(GeoData.totalResultsCount == 0) {
+      return { error: "The "+ city +" can't be found" };
+  }
     return GeoData;
     console.log(GeoData);
   } catch (e) {
