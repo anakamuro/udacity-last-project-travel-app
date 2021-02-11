@@ -19,10 +19,10 @@ async function handleSubmit(e) {
   tripData["Dcity"] = document.getElementById("destination-city").value;
   tripData["Ddate"] = document.getElementById("departing_date").value;
   tripData["Adate"] = document.getElementById("arriving_date").value;
-  tripData["cityImage"] = document.getElementById("photo-of-destination").value;
-  tripData["countdown"] = document.getElementById("count-down").value;
-  tripData["temperature"] = document.getElementById("temperature").value;
-  tripData["weather_condition"] = document.getElementById("weather").value;
+  //tripData["cityImage"] = document.getElementById("photo-of-destination").value;
+ // tripData["countdown"] = document.getElementById("count-down").value;
+  //tripData["temperature"] = document.getElementById("temperature").value;
+  //tripData["weather_condition"] = document.getElementById("weather").value;
   
   console.log("Button has been clicked");
   if (
