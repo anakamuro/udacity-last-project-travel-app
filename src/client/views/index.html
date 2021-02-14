@@ -22,22 +22,22 @@
       <form id="add-trip-form">
         <div class="trip-summary row">
           <label for="city"> From trip</label>
-          <input type="text" id="start-city" required placeholder=" Enter Location">
+          <input type="text" id="startCity" required placeholder=" Enter Location">
         </div>
 
         <div class="trip-summary row">
           <label for="city"> The Destination</label>
-          <input type="text" id="destination-city" required placeholder=" Enter Location">
+          <input type="text" id="destinationCity" required placeholder=" Enter Location">
         </div>
 
         <div class="trip-departing row">
           <label for="date">Departure Time</label>
-          <input type="date" id="Ddate" required placeholder="yyyy/mm/dd">
+          <input type="date" id="departingDate" required placeholder="yyyy/mm/dd">
         </div>
 
         <div class="trip-arriving row">
           <label for="date">Arrival Time</label>
-          <input type="date" id="Adate" required placeholder="yyyy/mm/dd">
+          <input type="date" id="arrivingDate" required placeholder="yyyy/mm/dd">
         </div>
 
 
@@ -49,7 +49,28 @@
       </form>
     </section>
 
-    <section  class='invisible'id="trip_details_section">
+  
+      <section class='invisible' id="trip_details_section">
+        <div id="trip_details">
+            <div id="dest_photo">
+                <img id="photo-of-destination" src="" alt="destination image">
+            </div>
+            <div id="main_details">
+              <div id="trip-from">Your trip starts from: <span class="dynamic_content" id="startCity"></span></div>
+              <div id="destination-info">Your trip destination: <span class="dynamic_content" id="destinationCity"></span></div>
+              <div id="departure-date">Day your trip starts at: <span class="dynamic_content" id="departingDate"></span>
+              </div>
+              <div id="arriving-date">Day you arrive at: <span class="dynamic_content" id="arrivingDate"></span></div>
+              <div id="count-down">Days to go <span class="dynamic_content" id="countdown"></span>
+              </div>
+              <div id="weather-info">Expect weather to be <span class="dynamic_content" id="temperature"></span> ,
+                mostly
+                <span class="dynamic_content" id="weather"></span>.</div>
+              <div>
+              <button class="button_style" id="remove_trip" onclick="Client.handleRemove()">Remove</button>
+              </div>
+            </div>
+            </div>
 
     </section>
   </main>

@@ -1,11 +1,6 @@
 let tripData = {};
 
-const geoNamesURL = "http://api.geonames.org/searchJSON?q=";
-const username = "akiakiaki";
-const darkSkyURL = "https://api.darksky.net/forecast/";
-const darkSkyKey = "8e4bdd3f43bdcb3bfede76e626ebb13f";
-const pixabayURL = "https://pixabay.com/api/?key=";
-const pixabayAPI = "15817374-015ecdcbd68299917ebff2ba6";
+
 
 if(document.querySelector("#btn-add") != null){
     document.querySelector("#btn-add").addEventListener("click", handleSubmit);
@@ -15,10 +10,10 @@ async function handleSubmit(e) {
   e.preventDefault();
 
   // get user input values
-  tripData["Scity"] = document.getElementById("trip-from").value;
-  tripData["Dcity"] = document.getElementById("destination-city").value;
-  tripData["Ddate"] = document.getElementById("departing_date").value;
-  tripData["Adate"] = document.getElementById("arriving_date").value;
+  tripData["startCity"] = document.getElementById("startCity").value;
+  tripData["destinationCity"] = document.getElementById("destinationCity").value;
+  tripData["departingDate"] = document.getElementById("departingDate").value;
+  tripData["arrivingDate"] = document.getElementById("arrivingDate").value;
   //tripData["cityImage"] = document.getElementById("photo-of-destination").value;
  // tripData["countdown"] = document.getElementById("count-down").value;
   //tripData["temperature"] = document.getElementById("temperature").value;
@@ -26,10 +21,10 @@ async function handleSubmit(e) {
   
   console.log("Button has been clicked");
   if (
-    tripData["Scity"] == "" ||
-    tripData["Dcity"] == "" ||
-    tripData["Ddate"] == "" ||
-    tripData["Adate"] == "" 
+    tripData["startCity"] == "" ||
+    tripData["destinationCity"] == "" ||
+    tripData["departingDate"] == "" ||
+    tripData["arrivingDate"] == "" 
     //tripData["cityImage"] == "" ||
     //tripData["countdown"] == "" ||
     //tripData["temperature"] == "" ||
@@ -44,10 +39,12 @@ async function handleSubmit(e) {
 
   let today = new Date();
   let differenceOfTimes = Math.abs(
-    new Date(Ddate).getTime() - new Date(today).getTime
+    new Date(tripData["departing-date"]).getTime() - new Date(today).getTime()
   );
   let countdown = Math.ceil(differenceOfTimes / (1000 * 60 * 60 * 24));
   tripData["countdown"] = countdown;
+
+  console.log(tripData)
 
   try {
     await postData('http://localhost:8085/tripData', 
@@ -91,7 +88,7 @@ async function handleSubmit(e) {
       });
   } catch (e) {
     console.log("error", e);
-  }
+  } 
 }
 
 export const getData = async (url) => {
@@ -107,49 +104,6 @@ export const getData = async (url) => {
   }
 };
 
-async function getGeoData(Dcity) {
-  const response = await fetch(
-    'https://cors-anywhere.herokuapp.com/' + `http://api.geonames.org/searchJSON?q=${Dcity}&maxRows=10&username=${username}`
-  );
-  try {
-    const GeoData = await response.json();
-    if(GeoData.totalResultsCount == 0) {
-      return { error: "The "+ city +" can't be found" };
-  }
-    return GeoData;
-    console.log(GeoData);
-  } catch (e) {
-    console.log("error", e);
-  }
-}
-
-async function getWeatherData(toLat, toLng, Adate) {
-  const response = await fetch(
-    `https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/${darkSkyKey}/${toLat},${toLng},${parseInt(
-      new Date(Adate).getTime() / 1000
-    )}`
-  );
-  try {
-    const weatherData = await response.json();
-    console.log(weatherData);
-    return weatherData;
-  } catch (e) {
-    console.log("error", e);
-  }
-}
-
-async function getPhoto(DcityPhoto) {
-  const response = await fetch(
-    `https://pixabay.com/api/?key=${pixabayAPI}&q=${DcityPhoto}&image_type=photo=true`
-  );
-  try {
-    const imageData = await response.json();
-    console.log(imageData);
-    return imageData;
-  } catch (e) {
-    console.log("error", e);
-  }
-}
 
 async function postData(tripData) {
   const response = await fetch('http://localhost:8085/postData', {
@@ -171,46 +125,25 @@ async function postData(tripData) {
 
 
 const updateUI = async () => {
-    const request = await fetch("http://localhost:8085/all");
-  try {
-    const allData = await request.json();
-    const {
-      cityImage,
-      Dcity,
-      Ddate,
-      Adate, 
-      Scity,
-      temperature,
-      weather_condition,
-      countdown,
-    } = allData || {};
-    // update new entry values
-    document.getElementById("trip_details_section").innerHTML = `
-    <div id="trip_details">
-    <div id="dest_photo">
-      <img id="photo-of-destination" src="${cityImage}" alt="destination image">
-    </div>
-    <div id="main_details">
-      <div id="trip-from">Your trip starts from: <span class="dynamic_content" id="trip-from">${Scity}</span></div>
-      <div id="destination-city">Your trip destination: <span class="dynamic_content" id="destination-city">${Dcity}</span></div>
-      <div id="departure-date">Day your trip starts at: <span class="dynamic_content" id="departing_date">${Ddate}</span>
-      </div>
-      <div id="arriving-date">Day you arrive at: <span class="dynamic_content" id="arriving_date">${Adate}</span></div>
-      <div id="count-down">Days to go <span class="dynamic_content" id="number_of_days">${countdown}</span>
-      </div>
-      <div id="weather-info">Expect weather to be <span class="dynamic_content" id="temperature"> ${temperature}&#8451;</span> ,
-        mostly
-        <span class="dynamic_content" id="weather">${weather_condition}</span>.</div>
-      <div>
-      <button class="button_style" id="remove_trip" onclick="Client.handleRemove()">Remove</button>
-      </div>
-    </div>
-  </div>
-    `;
-  } catch (error) {
-    console.log("error", error);
-  }
+  const request = await fetch("http://localhost:8085/all");
+try {
+  const allData = await request.json()
+    
+  // update new entry values
+  document.getElementById('startCity').innerHTML = allData.startCity; 
+  document.getElementById('destinationCity').innerHTML = allData.destinationCity;
+  document.getElementById('departingDate').innerHTML = allData.departingDate;
+  document.getElementById('arrivingDate').innerHTML = allData.arrivingDate;
+  document.getElementById('countdown').innerHTML = allData.countdown;
+  document.getElementById('photo-of-destination').innerHTML = allData.cityImage;
+  document.getElementById('weather').innerHTML = allData.weather_condition;
+  document.getElementById('temperature').innerHTML = allData.temperature;
+}
+catch (error) {
+  console.log("error", error);
+}
 };
+
 
 
 
