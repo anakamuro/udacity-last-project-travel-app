@@ -1,37 +1,33 @@
-let tripData = {};
+const geoNamesURL = "http://api.geonames.org/searchJSON?q=";
+const username = "akiakiaki";
+const weatherbitforecastURL =
+  "https://api.weatherbit.io/v2.0/forecast/daily?lat=";
+const weatherbithistoryURL =
+  "https://api.weatherbit.io/v2.0/history/daily?lat=";
+const weatherbitkey = "fe1ac0ef90ea41da99320ead77e32bda";
+const pixabayURL = "https://pixabay.com/api/?key=";
+const pixabayKey = "15817374-015ecdcbd68299917ebff2ba6";
 
-
-
-if(document.querySelector("#btn-add") != null){
-    document.querySelector("#btn-add").addEventListener("click", handleSubmit);
-  }
+if (document.querySelector("#btn-add") != null) {
+  document.querySelector("#btn-add").addEventListener("click", handleSubmit);
+}
 
 async function handleSubmit(e) {
   e.preventDefault();
 
   // get user input values
-  tripData["startCity"] = document.getElementById("startCity").value;
-  tripData["destinationCity"] = document.getElementById("destinationCity").value;
-  tripData["departingDate"] = document.getElementById("departingDate").value;
-  tripData["arrivingDate"] = document.getElementById("arrivingDate").value;
-  //tripData["cityImage"] = document.getElementById("photo-of-destination").value;
- // tripData["countdown"] = document.getElementById("count-down").value;
-  //tripData["temperature"] = document.getElementById("temperature").value;
-  //tripData["weather_condition"] = document.getElementById("weather").value;
-  
+  const startCity = document.getElementById("startCity").value;
+  const destinationCity = document.getElementById("destinationCity").value;
+  const departingDate = document.getElementById("departingDate").value;
+  const arrivingDate = document.getElementById("arrivingDate").value;
+
   console.log("Button has been clicked");
+
   if (
-    tripData["startCity"] == "" ||
-    tripData["destinationCity"] == "" ||
-    tripData["departingDate"] == "" ||
-    tripData["arrivingDate"] == "" 
-    //tripData["cityImage"] == "" ||
-    //tripData["countdown"] == "" ||
-    //tripData["temperature"] == "" ||
-    //tripData["weather_condition"] == ""
-    
-
-
+    startCity == "" ||
+    destinationCity == "" ||
+    departingDate == "" ||
+    arrivingDate == ""
   ) {
     alert("You need to write the city and date.");
     return;
@@ -39,14 +35,38 @@ async function handleSubmit(e) {
 
   let today = new Date();
   let differenceOfTimes = Math.abs(
-    new Date(tripData["departing-date"]).getTime() - new Date(today).getTime()
+    new Date(departingDate).getTime() - new Date(today).getTime()
   );
   let countdown = Math.ceil(differenceOfTimes / (1000 * 60 * 60 * 24));
-  tripData["countdown"] = countdown;
 
-  console.log(tripData)
+  const latlng = await getGeoData(destinationCity);
+  console.log(latlng);
 
-  try {
+  const cityImage = await getPhoto(destinationCity);
+  console.log(cityImage);
+
+  const temperature = await getWeatherData(
+    latlng.lat,
+    latlng.lng,
+    latlng.arrivingDate
+  ).temperature;
+  const weather_condition = await getWeatherData(
+    latlng.lat,
+    latlng.lng,
+    latlng.arrivingDate
+  ).weather_condition;
+  console.log(temperature, weather_condition);
+  updateUI(
+    startcCity,
+    destinationCity,
+    departingDate,
+    arrivingDate,
+    countdown,
+    cityImage,
+    temperature,
+    weather_condition
+  );
+  /*try {
     await postData('http://localhost:8085/tripData', 
     { cityImage, Dcity, Ddate, Scity, Adate, temperature, weather_condition, countdown })
      await getData('http://localhost:8085/getGeoData')
@@ -88,7 +108,92 @@ async function handleSubmit(e) {
       });
   } catch (e) {
     console.log("error", e);
-  } 
+  }  */
+}
+
+async function getGeoData(destinationCity) {
+  const response = await fetch(
+    `http://api.geonames.org/searchJSON?q=${destinationCity}&maxRows=10&username=${username}`
+  );
+  try {
+    const GeoData = await response.json();
+    if (GeoData.totalResultsCount == 0) {
+      return { error: "The " + city + " can't be found" };
+    }
+    console.log(GeoData);
+    const lat = GeoData.geonames[0].lat;
+    const lng = GeoData.geonames[0].lng;
+    return { lat, lng };
+  } catch (e) {
+    console.log("error", e);
+  }
+}
+
+async function getWeatherData(lat, lng, arrivingDate) {
+  // Getting the timestamp for the current date and traveling date for upcoming processing.
+  const timestamp_trip_date = Math.floor(
+    new Date(arrivingDate).getTime() / 1000
+  );
+  const todayDate = new Date();
+  const timestamp_today = Math.floor(
+    new Date(
+      todayDate.getFullYear() +
+        "-" +
+        todayDate.getMonth() +
+        "-" +
+        todayDate.getDate()
+    ).getTime() / 1000
+  );
+
+  let response;
+  // Check if the date is gone and call the appropriate endpoint.
+  if (timestamp_trip_date < timestamp_today) {
+    let next_date = new Date(arrivingdate);
+    next_date.setDate(next_date.getDate() + 1);
+    response = await fetch(
+      weatherbithistoryURL +
+        lat +
+        "&lon=" +
+        lng +
+        "&start_date=" +
+        arrivingDate +
+        "&end_date=" +
+        next_date +
+        "&key=" +
+        weatherbitkey
+    );
+  } else {
+    response = await fetch(
+      weatherbitforecastURL + lat + "&lon=" + lng + "&key=" + weatherbitkey
+    );
+  }
+
+  try {
+    const weatherData = await response.json();
+    console.log(weatherData);
+
+    const temperature = weatherData["data"][0]["temp"];
+    const weather_condition =
+      weatherData["data"]["0"]["weather"]["description"];
+    return { temperature, weather_condition };
+  } catch (e) {
+    console.log("error", e);
+  }
+}
+
+async function getPhoto(destinationCity) {
+  const response = await fetch(
+    `https://pixabay.com/api/?key=${pixabayKey}&q=${destinationCity}&image_type=photo`
+  );
+  try {
+    const imageData = await response.json();
+    if (imageData["hits"].length > 0) {
+      const cityImage = imageData["hits"][0]["webformatURL"];
+      return cityImage;
+    }
+  } catch (e) {
+    console.log("error", e);
+  }
 }
 
 export const getData = async (url) => {
@@ -104,9 +209,8 @@ export const getData = async (url) => {
   }
 };
 
-
 async function postData(tripData) {
-  const response = await fetch('http://localhost:8085/postData', {
+  const response = await fetch("http://localhost:8085/postData", {
     method: "POST",
     credentials: "same-origin",
     headers: {
@@ -122,35 +226,30 @@ async function postData(tripData) {
   }
 }
 
-
-
-const updateUI = async () => {
-  const request = await fetch("http://localhost:8085/all");
-try {
-  const allData = await request.json()
-    
+const updateUI = (
+  startCity,
+  destinationCity,
+  departingDate,
+  arrivingDate,
+  countdown,
+  cityImage,
+  weather_condition,
+  temperature
+) => {
   // update new entry values
-  document.getElementById('startCity').innerHTML = allData.startCity; 
-  document.getElementById('destinationCity').innerHTML = allData.destinationCity;
-  document.getElementById('departingDate').innerHTML = allData.departingDate;
-  document.getElementById('arrivingDate').innerHTML = allData.arrivingDate;
-  document.getElementById('countdown').innerHTML = allData.countdown;
-  document.getElementById('photo-of-destination').innerHTML = allData.cityImage;
-  document.getElementById('weather').innerHTML = allData.weather_condition;
-  document.getElementById('temperature').innerHTML = allData.temperature;
-}
-catch (error) {
-  console.log("error", error);
-}
+  document.getElementById("startCityResult").innerHTML = startCity;
+  document.getElementById("destinationCityResult").innerHTML = destinationCity;
+  document.getElementById("departingDateResult").innerHTML = departingDate;
+  document.getElementById("arrivingDateResult").innerHTML = arrivingDate;
+  document.getElementById("countdown").innerHTML = countdown;
+  document.getElementById("photo-of-destination").src = cityImage;
+  document.getElementById("weather").innerHTML = weather_condition;
+  document.getElementById("temperature").innerHTML = temperature;
 };
 
-
-
-
 const handleRemove = () => {
-    document.getElementById("trip_details_section").innerHTML = "";
-    tripData = {};
-  };
-  
+  document.getElementById("trip_details_section").innerHTML = "";
+  tripData = {};
+};
 
 export { handleSubmit, handleRemove };
