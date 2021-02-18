@@ -28,31 +28,5 @@ const tripData = {};
 app.get("/", function (req, res) {
   res.sendFile("./dist/index.html", { root: __dirname });
 });
-app.get("/all", getInfo);
-
-function getInfo(req, res) {
-  res.send(tripData);
-}
-
-app.post("/postData", function (req, res) {
-  const requestBody = req.body;
-
-  tripData.Scity = requestBody.Scity;
-  tripData.Dcity = requestBody.Dcity;
-  tripData.Ddate = requestBody.Ddate;
-  tripData.Adate = requestBody.Adate;
-  tripData.countdown = requestBody.countdown;
-  tripData.cityImage = requestBody.cityImage;
-  tripData.weather_condition = requestBody.weather_condition;
-  tripData.temperature = requestBody.temperature;
-
-  res.send(tripData);
-});
-
-
-
-
-
-
 
 module.exports = app;
